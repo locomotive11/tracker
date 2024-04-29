@@ -1,0 +1,90 @@
+%HTTPoison.Response{
+  status_code: 200,
+  body: "[\"NA1_4980619899\"]",
+  headers: [
+    {"Date", "Thu, 25 Apr 2024 12:26:32 GMT"},
+    {"Content-Type", "application/json;charset=utf-8"},
+    {"Transfer-Encoding", "chunked"},
+    {"Connection", "keep-alive"},
+    {"Vary", "Accept-Encoding"},
+    {"X-App-Rate-Limit", "20:1,100:120"},
+    {"X-App-Rate-Limit-Count", "19:1,44:120"},
+    {"X-Method-Rate-Limit", "2000:10"},
+    {"X-Method-Rate-Limit-Count", "62:10"},
+    {"X-Riot-Edge-Trace-Id", "f9ed7c31-18d4-4cf4-9ec2-730e1d15d889"},
+    {"Access-Control-Allow-Origin", "*"},
+    {"Access-Control-Allow-Methods", "GET, PUT, DELETE, POST, OPTIONS"},
+    {"Access-Control-Allow-Headers",
+     "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"},
+    {"Access-Control-Expose-Headers", "Content-Length,Content-Range"}
+  ],
+  request_url: "https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/eYaQ8rDaBpXKbd04NZVAgANchehJSe5wjgY5kHt4U-rIdfOGPmBbeQCbGCg0xaffkWy2863mu-MOUw/ids?start=0&count=1&api_key=RGAPI-83f162c6-82df-447c-8a2b-4cf1c5e91c75",
+  request: %HTTPoison.Request{
+    method: :get,
+    url: "https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/eYaQ8rDaBpXKbd04NZVAgANchehJSe5wjgY5kHt4U-rIdfOGPmBbeQCbGCg0xaffkWy2863mu-MOUw/ids?start=0&count=1&api_key=RGAPI-83f162c6-82df-447c-8a2b-4cf1c5e91c75",
+    headers: [],
+    body: "",
+    params: %{},
+    options: []
+  }
+}
+
+06:26:32.811 [info] Summoner Scale Much_Diff completed match NA1_4980619899
+%HTTPoison.Response{
+  status_code: 200,
+  body: "[\"NA1_4982549977\"]",
+  headers: [
+    {"Date", "Thu, 25 Apr 2024 12:26:33 GMT"},
+    {"Content-Type", "application/json;charset=utf-8"},
+    {"Transfer-Encoding", "chunked"},
+    {"Connection", "keep-alive"},
+    {"Vary", "Accept-Encoding"},
+    {"X-App-Rate-Limit", "20:1,100:120"},
+    {"X-App-Rate-Limit-Count", "9:1,37:120"},
+    {"X-Method-Rate-Limit", "2000:10"},
+    {"X-Method-Rate-Limit-Count", "54:10"},
+    {"X-Riot-Edge-Trace-Id", "d0400b5e-de63-4670-aefa-4fdb8958e4bb"},
+    {"Access-Control-Allow-Origin", "*"},
+    {"Access-Control-Allow-Methods", "GET, PUT, DELETE, POST, OPTIONS"},
+    {"Access-Control-Allow-Headers",
+     "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"},
+    {"Access-Control-Expose-Headers", "Content-Length,Content-Range"}
+  ],
+  request_url: "https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/jZzHKSfYx4cKmB71WRKuG9hDUdEH7EWpMMaQYLW5m0YMUg9l6J89B6pa_edMuPeWtIgx9ULZ6V4LxQ/ids?start=0&count=1&api_key=RGAPI-83f162c6-82df-447c-8a2b-4cf1c5e91c75",
+  request: %HTTPoison.Request{
+    method: :get,
+    url: "https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/jZzHKSfYx4cKmB71WRKuG9hDUdEH7EWpMMaQYLW5m0YMUg9l6J89B6pa_edMuPeWtIgx9ULZ6V4LxQ/ids?start=0&count=1&api_key=RGAPI-83f162c6-82df-447c-8a2b-4cf1c5e91c75",
+    headers: [],
+    body: "",
+    params: %{},
+    options: []
+  }
+}
+
+06:26:32.884 [info] Summoner SaberToothFilms_NA1 completed match NA1_4982549977
+%HTTPoison.Response{
+  status_code: 429,
+  body: "{\"status\":{\"message\":\"Rate limit exceeded\",\"status_code\":429}}",
+  headers: [
+    {"Date", "Thu, 25 Apr 2024 12:26:33 GMT"},
+    {"Content-Type", "application/json;charset=utf-8"},
+    {"Transfer-Encoding", "chunked"},
+    {"Connection", "keep-alive"},
+    {"Retry-After", "2"},
+    {"X-App-Rate-Limit", "20:1,100:120"},
+    {"X-App-Rate-Limit-Count", "25:1,48:120"},
+    {"X-Method-Rate-Limit", "2000:10"},
+    {"X-Method-Rate-Limit-Count", "71:10"},
+    {"X-Rate-Limit-Type", "application"},
+    {"X-Riot-Edge-Trace-Id", "ea19d0ca-f3ec-4efe-b6a2-fd08d46ba993"}
+  ],
+  request_url: "https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/zlHkqjQ5xKSASMQUGDNGTLvPOnixdcPJW7Vyh1CiYdqwC4RzwDWbGNF_yOhItrQBPbHPPZI-laUdJA/ids?start=0&count=1&api_key=RGAPI-83f162c6-82df-447c-8a2b-4cf1c5e91c75",
+  request: %HTTPoison.Request{
+    method: :get,
+    url: "https://americas.api.riotgames.com/lol/match/v5/matches/by-puuid/zlHkqjQ5xKSASMQUGDNGTLvPOnixdcPJW7Vyh1CiYdqwC4RzwDWbGNF_yOhItrQBPbHPPZI-laUdJA/ids?start=0&count=1&api_key=RGAPI-83f162c6-82df-447c-8a2b-4cf1c5e91c75",
+    headers: [],
+    body: "",
+    params: %{},
+    options: []
+  }
+}
