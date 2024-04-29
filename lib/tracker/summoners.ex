@@ -1,7 +1,6 @@
 defmodule Tracker.Summoners do
   @moduledoc """
     This is the context module for tracking summoner matches
-
   """
   require Logger
   alias Tracker.RiotApi
@@ -38,12 +37,16 @@ defmodule Tracker.Summoners do
         url
       end
 
-    response = RiotApi.make_api_request(url)
-
-    case response do
-      {:ok, resp} ->
-        IO.inspect(resp, label: "FROM get_summoner_puuid OK")
+    case RiotApi.make_api_request(url) do
+      {:ok, 200, resp} ->
         {:ok, %{game_name: resp["gameName"], tag_line: resp["tagLine"], puuid: resp["puuid"]}}
+
+      {:error, 429, headers, resp} ->
+        Logger.info(
+          "Rate Throttling - get_summoner_puuid game_name: #{game_name} tag_line: #{tag_line} \n headers: #{inspect(headers)}"
+        )
+
+        {:error, %{resp: resp.body}}
 
       {:error, msg} ->
         Logger.notice("METHOD: get_summoner_puuid #{inspect(msg)}")
@@ -61,7 +64,22 @@ defmodule Tracker.Summoners do
         url
       end
 
-    RiotApi.make_api_request(url)
+    case RiotApi.make_api_request(url) do
+      {:ok, 200, resp} ->
+        # IO.inspect(resp, label: "FROM get_summoner_matches OK")
+        {:ok, resp}
+
+      {:error, 429, headers, resp} ->
+        Logger.debug(
+          "Rate Throttling - Summoners.get_summoner_matches() headers: #{inspect(headers)}"
+        )
+
+        {:error, 429, headers, resp}
+
+      {:error, msg} ->
+        Logger.error("METHOD: get_summoner_matches() #{inspect(msg)}")
+        {:error, inspect(msg)}
+    end
   end
 
   @spec get_match_participants([String.t()]) ::
@@ -125,10 +143,8 @@ defmodule Tracker.Summoners do
         url
       end
 
-    response = RiotApi.make_api_request(url)
-
-    case response do
-      {:ok, resp_body} ->
+    case RiotApi.make_api_request(url) do
+      {:ok, 200, resp_body} ->
         participants =
           Enum.map(resp_body["info"]["participants"], fn summoner ->
             %{
@@ -140,6 +156,11 @@ defmodule Tracker.Summoners do
           end)
 
         {:ok, participants}
+
+      {:error, 429, _headers, resp} ->
+        Logger.debug("Rate Throttling - get_match_participants MatchID: #{match}")
+
+        {:error, %{resp: resp.body}}
 
       {:error, message} ->
         {:error, message}

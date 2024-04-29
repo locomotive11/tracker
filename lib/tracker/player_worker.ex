@@ -51,7 +51,7 @@ defmodule Tracker.PlayerWorker do
           {:noreply, new_state}
         end
 
-      {:error, %{message: _msg, headers: headers, status_code: 429}} ->
+      {:error, 429, headers, _resp} ->
         retry_period = get_retry_period(headers)
 
         Logger.debug("Summoner #{state.riot_id} rate throttled retry in: #{retry_period}ms")

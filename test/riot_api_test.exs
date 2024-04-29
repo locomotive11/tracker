@@ -9,8 +9,8 @@ defmodule RiotApiTest do
   @tag run: true
   test "make status code 200 api request", %{bypass: bypass} do
     resp_data = %{
-      status_code: 200,
-      body: %{"puuid" => "my_puuid", "gameName" => "Fred", "tagLine" => "Yabba"}
+      "status_code" => 200,
+      "body" => %{"puuid" => "my_puuid", "gameName" => "Fred", "tagLine" => "Yabba"}
     }
 
     Bypass.expect(bypass, fn conn ->
@@ -21,19 +21,20 @@ defmodule RiotApiTest do
       )
     end)
 
-    assert {:ok, result} = Tracker.RiotApi.make_api_request("http://localhost:#{bypass.port}")
+    assert {:ok, 200, result} =
+             Tracker.RiotApi.make_api_request("http://localhost:#{bypass.port}")
 
-    assert result["body"] == resp_data.body
+    assert result["body"] == resp_data["body"]
+    assert result["status_code"] == 200
   end
 
   @tag run: true
   test "make status code 429 api request", %{bypass: bypass} do
     # resp_body = "Hello"
-    resp_data =
-      %{
-        status_code: 429,
-        body: %{"status" => %{"message" => "Rate limit exceeded", "status_code" => 429}}
-      }
+    resp_data = %{
+      "status_code" => 429,
+      "body" => %{"status" => %{"message" => "Rate limit exceeded", "status_code" => 429}}
+    }
 
     Bypass.expect(bypass, fn conn ->
       conn =
@@ -46,14 +47,12 @@ defmodule RiotApiTest do
       )
     end)
 
-    {:error, result} =
+    {:error, 429, headers, result} =
       Tracker.RiotApi.make_api_request("http://localhost:#{bypass.port}")
 
-    IO.inspect(result, label: "TEST RESULT")
-
-    assert result.status_code == resp_data.status_code
-    assert result.message == resp_data.body["status"]["message"]
-    assert Enum.any?(result.headers, fn hdr -> hdr == {"Retry-After", "2"} end)
+    assert result["status_code"] == resp_data["status_code"]
+    assert result["body"]["status"]["message"] == resp_data["body"]["status"]["message"]
+    assert Enum.any?(headers, fn hdr -> hdr == {"Retry-After", "2"} end)
   end
 
   @tag run: true
@@ -61,8 +60,8 @@ defmodule RiotApiTest do
     # resp_body = "Hello"
     resp_data =
       %{
-        status_code: 503,
-        body: %{"status" => %{"message" => "Service Unavailable", "status_code" => 503}}
+        "status_code" => 503,
+        "body" => %{"status" => %{"message" => "Service Unavailable", "status_code" => 503}}
       }
 
     Bypass.expect(bypass, fn conn ->
@@ -73,12 +72,11 @@ defmodule RiotApiTest do
       )
     end)
 
-    {:error, result} =
+    {:error, status_code, result} =
       Tracker.RiotApi.make_api_request("http://localhost:#{bypass.port}")
 
-    IO.inspect(result, label: "TEST 503 RESULT")
-
-    assert result.status_code == resp_data.status_code
-    assert result.message == resp_data.body["status"]["message"]
+    assert result["status_code"] == resp_data["status_code"]
+    assert result["body"]["status"]["message"] == resp_data["body"]["status"]["message"]
+    assert status_code == 503
   end
 end
