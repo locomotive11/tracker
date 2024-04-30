@@ -7,6 +7,10 @@ defmodule Tracker.Summoners do
 
   @api_key Application.compile_env!(:tracker, :api_key)
 
+  @doc """
+    Returns a unique list of summoners who have played with the given summoner in their last 5 matches.
+    See Tracker.track_summoner/2 for additional documentation.
+  """
   @spec track_summoner(String.t(), String.t()) :: [String.t()] | {:error, String.t()}
   def track_summoner(game_name, tag_line) do
     with {:ok, summoner} <- get_summoner_puuid(game_name, tag_line),
@@ -25,6 +29,24 @@ defmodule Tracker.Summoners do
         {:error, msg}
     end
   end
+
+  @doc """
+    Returns a summoner puuid from the Riot Games account-v1 api.
+
+    ## Parameters
+    - game_name: String that represents the Riot API gameName
+    - tag_line: String that represents the Riot API tagLine
+
+    ## Example
+    iex> Tracker.Summoners.get_summoner_puuid("Schuler", "NA1")
+    {:ok,
+     %{
+       game_name: "Schuler",
+       tag_line: "NA1",
+       puuid: "bojt5-cZF9VPkfB1rRQddm6GvvOc70c2OTO878ig_ZVfV0Wln412oxjuw0UT_H07G2OBZtMyRDVtlQ"
+     }}
+
+  """
 
   @spec get_summoner_puuid(String.t(), String.t(), String.t()) ::
           {:ok, map()} | {:error, String.t()}
@@ -54,6 +76,22 @@ defmodule Tracker.Summoners do
     end
   end
 
+  @doc """
+    Returns the last x number of matches for the given puuid
+
+    ## Parameters
+      - puuid String representing the unique id for a summoner
+      - match_limit Integer respresenting the number of recent match ids to return (optional defaults to 5 matches)
+      - url String representing the endpoint for the api call (optional defaults to nil is useful for testing)
+
+  ## Example
+  iex> Tracker.Summoners.get_summoner_matches("bojt5-cZF9VPkfB1rRQddm6GvvOc70c2OTO878ig_ZVfV0Wln412oxjuw0UT_H07G2OBZtMyRDVtlQ", 5, nil)
+  {:ok,
+   ["NA1_4986981570", "NA1_4986962961", "NA1_4986941599", "NA1_4986926239",
+    "NA1_4985873060"]}
+
+  """
+
   @spec get_summoner_matches(String.t(), pos_integer()) ::
           {:ok, [String.t()]} | {:error, String.t()}
   def get_summoner_matches(puuid, match_limit \\ 5, url \\ nil) do
@@ -81,6 +119,47 @@ defmodule Tracker.Summoners do
         {:error, inspect(msg)}
     end
   end
+
+  @doc """
+    Returns a list of participants for a given match id.
+
+    ## Parameters
+      -matches List of Strings, or String representing Riot Games match ids
+
+    ## Examples
+    iex(5)> Tracker.Summoners.get_match_participants(["NA1_4986981570", "NA1_4986962961"])
+    {:ok,
+     [
+       %{
+         matches: ["NA1_4986981570"],
+         game_name: "Dagarin",
+         tag_line: "NA1",
+         puuid: "rjB_o96EsYolGVnh90uHMRLFtJzo4IjQQl0BybxUuv-pQt53BiGMYFZt140QYA1MMgj3vKJyPf6mkw"
+       },
+       %{
+         matches: ["NA1_4986981570"],
+         game_name: "Wibby",
+         tag_line: "NA1",
+         puuid: "O-bCSqumIGvd8GdYWNF0CZpRiz6o2OUZOcKtkmjTD-TBZISXZHw3Tq08Yy6PZYm7N-eTEbsQ2dzNJg"
+       } ...]}
+
+       iex(6)> Tracker.Summoners.get_match_participants("NA1_4986962961")
+       {:ok,
+        [
+          %{
+            matches: ["NA1_4986962961"],
+            game_name: "Schuler",
+            tag_line: "NA1",
+            puuid: "bojt5-cZF9VPkfB1rRQddm6GvvOc70c2OTO878ig_ZVfV0Wln412oxjuw0UT_H07G2OBZtMyRDVtlQ"
+          },
+          %{
+            matches: ["NA1_4986962961"],
+            game_name: "ArctiqueWolf",
+            tag_line: "NA1",
+            puuid: "tTvbKOWIQ1aQXDai3tyzm5_xJdf0h0_Dc5a9QQLGEi_0ZFsI9Osajh6ziwr3x-fVB2oQSP6CtjpP0Q"
+          } ...]}
+
+  """
 
   @spec get_match_participants([String.t()]) ::
           {:ok,
@@ -166,6 +245,33 @@ defmodule Tracker.Summoners do
         {:error, message}
     end
   end
+
+  @doc """
+  Starts a Tracker.PlayerWorker for each summoners in the participants list
+  Returns the pid of the Tracker.PlayerWorker and the Riot Games riotId
+
+  ## Parameters
+    - participants a List of summoner maps
+
+  ## Example
+  iex(7)> Tracker.Summoners.start_tracking_participants([   %{
+  ...(7)>      matches: ["NA1_4986962961"],
+  ...(7)>      game_name: "ArctiqueWolf",
+  ...(7)>      tag_line: "NA1",
+  ...(7)>      puuid: "tTvbKOWIQ1aQXDai3tyzm5_xJdf0h0_Dc5a9QQLGEi_0ZFsI9Osajh6ziwr3x-fVB2oQSP6CtjpP0Q"
+  ...(7)>    },
+  ...(7)>    %{
+  ...(7)>      matches: ["NA1_4986962961"],
+  ...(7)>      game_name: "IAmNotAHealer",
+  ...(7)>      tag_line: "NA1",
+  ...(7)>      puuid: "1lJWf68lvbjcaBnLNWPDYfTuzgDv6ArwB_3cWKQQFfDzqcFwugyx4TnWvmyqDIauxT1P8iROaF-cVA"
+  ...(7)>    }])
+  {:ok,
+   [
+     %{pid: #PID<0.266.0>, riot_id: "ArctiqueWolf_NA1"},
+     %{pid: #PID<0.267.0>, riot_id: "IAmNotAHealer_NA1"}
+   ]}
+  """
 
   @spec start_tracking_participants([
           %{game_name: String.t(), tag_line: String.t(), puuid: String.t(), matches: [String.t()]}

@@ -2,7 +2,16 @@ defmodule Tracker.RiotApi do
   @moduledoc """
     Riot Api module
   """
-  @spec make_api_request(String.t()) :: {:ok, String.t()} | {:error, map()} | {:error, String.t()}
+
+  @doc """
+    Makes a request to the Riot Games API
+
+    ## Parameters
+    -url String representing the desired api endpoint The url params include the required api_key
+
+  """
+  @spec make_api_request(String.t()) ::
+          {:ok, integer(), String.t()} | {:error, integer(), map()} | {:error, String.t()}
   def make_api_request(url) do
     {status, response} = HTTPoison.get(url)
 
