@@ -5,7 +5,7 @@ defmodule Tracker.Summoners do
   require Logger
   alias Tracker.RiotApi
 
-  @api_key "RGAPI-7832829d-d592-4253-b427-362bd3a5a8c1"
+  @api_key Application.compile_env!(:tracker, :api_key)
 
   @spec track_summoner(String.t(), String.t()) :: [String.t()] | {:error, String.t()}
   def track_summoner(game_name, tag_line) do
