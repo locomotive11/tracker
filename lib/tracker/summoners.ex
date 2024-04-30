@@ -5,7 +5,7 @@ defmodule Tracker.Summoners do
   require Logger
   alias Tracker.RiotApi
 
-  @api_key "RGAPI-de3a99bf-f2bf-4334-ae5c-8b0ec1567d79"
+  @api_key "RGAPI-7832829d-d592-4253-b427-362bd3a5a8c1"
 
   @spec track_summoner(String.t(), String.t()) :: [String.t()] | {:error, String.t()}
   def track_summoner(game_name, tag_line) do
@@ -169,7 +169,7 @@ defmodule Tracker.Summoners do
 
   @spec start_tracking_participants([
           %{game_name: String.t(), tag_line: String.t(), puuid: String.t(), matches: [String.t()]}
-        ]) :: {:ok, [%{riotId: String.t(), pid: pid()}]}
+        ]) :: {:ok, [%{pid: pid(), riotId: String.t()}]}
   def start_tracking_participants(participants) do
     participant_registry =
       Enum.map(participants, fn participant ->

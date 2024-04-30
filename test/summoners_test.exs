@@ -129,4 +129,31 @@ defmodule SummonersTest do
     assert fred == List.first(expected_response)
     assert barney == List.last(expected_response)
   end
+
+  @tag run: true
+  test "start tracking participants" do
+    match = "NA1_MATCHID_1234"
+
+    participants = [
+      %{
+        game_name: "Fred",
+        tag_line: "Flintstone",
+        matches: ["#{match}"],
+        puuid: "abc_1234_my_puuid"
+      },
+      %{game_name: "Barney", tag_line: "Rubble", matches: ["#{match}"], puuid: "cba_4321_my_puid"}
+    ]
+
+    {:ok, participants_registry} = Tracker.Summoners.start_tracking_participants(participants)
+
+    assert Enum.count(participants_registry) == 2
+
+    Enum.each(participants_registry, fn pr ->
+      assert is_pid(pr.pid)
+      assert Process.alive?(pr.pid)
+    end)
+
+    assert Enum.any?(participants_registry, fn pr -> pr.riot_id == "Fred_Flintstone" end)
+    assert Enum.any?(participants_registry, fn pr -> pr.riot_id == "Barney_Rubble" end)
+  end
 end
